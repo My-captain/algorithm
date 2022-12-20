@@ -229,12 +229,13 @@ public class DynamicProgramming {
         for (int i = 0; i < numRows; ++i) {
             if (i <= 1) {
                 ArrayList<Integer> row = new ArrayList<>();
-                row.add();
+//                row.add();
                 res.add(row);
             } else {
 
             }
         }
+        return null;
     }
 
     public static void main(String[] args) {
