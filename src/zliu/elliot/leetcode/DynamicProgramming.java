@@ -1,5 +1,6 @@
 package zliu.elliot.leetcode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DynamicProgramming {
@@ -178,6 +179,62 @@ public class DynamicProgramming {
             dp[i] = min+1;
         }
         return dp[n];
+    }
+
+    /**
+     * 70. 爬楼梯
+     * 假设你正在爬楼梯。需要 n 阶你才能到达楼顶。
+     * 每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
+     * @param n
+     * @return
+     */
+    public int climbStairs(int n) {
+        if (n == 0) {
+            return 0;
+        }
+        if (n==1){
+            return 1;
+        }
+        if (n==2){
+            return 2;
+        }
+        int temp1 = 1, temp2=2, temp3=0;
+        for (int i = 2; i < n; ++i) {
+            temp3 = temp2+temp1;
+            temp1 = temp2;
+            temp2 = temp3;
+        }
+        return temp2;
+    }
+
+    public int rob(int[] nums) {
+        int len = nums.length;
+        int[] f = new int[len+2];
+        f[0] = f[1] = 0;
+        f[2] = nums[0];
+        for (int i = 1; i < len; ++i) {
+            f[i+2] = Math.max(f[i-1], f[i]) + nums[i];
+        }
+        return Math.max(f[len+1], f[len]);
+    }
+
+    /**
+     * 118. 杨辉三角
+     * 给定一个非负整数 numRows，生成「杨辉三角」的前 numRows 行。
+     * @param numRows
+     * @return
+     */
+    public List<List<Integer>> generate(int numRows) {
+        ArrayList<ArrayList<Integer>> res = new ArrayList<>();
+        for (int i = 0; i < numRows; ++i) {
+            if (i <= 1) {
+                ArrayList<Integer> row = new ArrayList<>();
+                row.add();
+                res.add(row);
+            } else {
+
+            }
+        }
     }
 
     public static void main(String[] args) {
