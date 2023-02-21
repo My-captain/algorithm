@@ -74,6 +74,33 @@ public class DoubleCursor {
     }
 
     /**
+     * 21. 合并两个有序链表
+     *
+     * @param list1
+     * @param list2
+     * @return
+     */
+    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        if (list1 == null) {
+            return list2;
+        } else if (list2 == null) {
+            return list1;
+        }
+        ListNode parent, child, cP, c = null;
+        if (list1.val >= list2.val) {
+            parent = list2;
+            child = list1;
+        } else {
+            parent = list1;
+            child = list2;
+        }
+        cP = parent;
+        c = child;
+
+        return parent;
+    }
+
+    /**
      * 18. 四数之和
      *
      * @param nums   数组
@@ -462,6 +489,7 @@ public class DoubleCursor {
     /**
      * 349. 两个数组的交集
      * 给定两个数组 nums1 和 nums2 ，返回 它们的交集 。输出结果中的每个元素一定是 唯一 的。我们可以 不考虑输出结果的顺序 。
+     *
      * @param nums1
      * @param nums2
      * @return
@@ -471,12 +499,12 @@ public class DoubleCursor {
         Arrays.sort(nums2);
         int len1 = nums1.length;
         int len2 = nums2.length;
-        int[] integers = new int[len1+len2];
+        int[] integers = new int[len1 + len2];
         int interCnt = 0;
         for (int cursor1 = 0, cursor2 = 0; cursor1 < len1 && cursor2 < len2; ) {
             if (nums1[cursor1] == nums2[cursor2]) {
                 if (cursor1 == 0 || nums1[cursor1] != nums1[cursor1 - 1]) {
-                    integers[interCnt++]=nums1[cursor1];
+                    integers[interCnt++] = nums1[cursor1];
                 }
                 ++cursor1;
                 ++cursor2;
@@ -493,6 +521,7 @@ public class DoubleCursor {
      * 350. 两个数组的交集 II
      * 给你两个整数数组 nums1 和 nums2 ，请你以数组形式返回两数组的交集。
      * 返回结果中每个元素出现的次数，应与元素在两个数组中都出现的次数一致（如果出现次数不一致，则考虑取较小值）。可以不考虑输出结果的顺序。
+     *
      * @param nums1
      * @param nums2
      * @return
@@ -502,7 +531,7 @@ public class DoubleCursor {
         Arrays.sort(nums2);
         int len1 = nums1.length;
         int len2 = nums2.length;
-        int[] integers = new int[len1+len2];
+        int[] integers = new int[len1 + len2];
         int interCnt = 0;
         for (int cursor1 = 0, cursor2 = 0; cursor1 < len1 && cursor2 < len2; ) {
             if (nums1[cursor1] == nums2[cursor2]) {
@@ -523,19 +552,20 @@ public class DoubleCursor {
      * 给定一个包含红色、白色和蓝色、共 n 个元素的数组 nums ，原地对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。
      * 我们使用整数 0、 1 和 2 分别表示红色、白色和蓝色。
      * 必须在不使用库内置的 sort 函数的情况下解决这个问题。
+     *
      * @param nums
      */
     public void sortColors(int[] nums) {
         if (nums.length < 1) {
             return;
         }
-        int[] colorCnt = new int[]{0,0,0};
+        int[] colorCnt = new int[]{0, 0, 0};
         for (int i = 0; i < nums.length; ++i) {
-            colorCnt[nums[i]]+=1;
+            colorCnt[nums[i]] += 1;
         }
         Arrays.fill(nums, 0, colorCnt[0], 0);
-        Arrays.fill(nums, colorCnt[0], colorCnt[0]+colorCnt[1], 1);
-        Arrays.fill(nums, colorCnt[0]+colorCnt[1], colorCnt[0]+colorCnt[1]+colorCnt[2], 2);
+        Arrays.fill(nums, colorCnt[0], colorCnt[0] + colorCnt[1], 1);
+        Arrays.fill(nums, colorCnt[0] + colorCnt[1], colorCnt[0] + colorCnt[1] + colorCnt[2], 2);
 
     }
 
@@ -546,7 +576,7 @@ public class DoubleCursor {
 //        doubleCursor.nextPermutation(new int[]{1,2});
 //        doubleCursor.merge(new int[]{1,2,3,3,4, 0,0}, 5, new int[]{2,4}, 2);
 //        doubleCursor.moveZeroes(new int[]{0, 1, 0, 3, 12});
-        doubleCursor.intersection(new int[]{1, 2,2,1}, new int[]{2,2});
+        doubleCursor.intersection(new int[]{1, 2, 2, 1}, new int[]{2, 2});
 
         System.out.printf("");
     }
