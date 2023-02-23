@@ -86,18 +86,65 @@ public class DoubleCursor {
         } else if (list2 == null) {
             return list1;
         }
-        ListNode parent, child, cP, c = null;
+        ListNode result, pA, pB = null;
         if (list1.val >= list2.val) {
-            parent = list2;
-            child = list1;
+            pA = result = list2;
+            pB = list1;
         } else {
-            parent = list1;
-            child = list2;
+            pA = result = list1;
+            pB = list2;
         }
-        cP = parent;
-        c = child;
+        ListNode previous = pA;
+        pA = pA.next;
+        while (pB != null) {
+            if (pA == null) {
+                previous.next = pB;
+                return result;
+            } else {
+                if (pB.val < pA.val) {
+                    previous.next = pB;
+                    previous = pB;
+                    previous.next = pA;
+                    pB = pB.next;
+                } else {
+                    previous.next = pA;
+                    previous = previous.next;
+                    pA = pA.next;
+                }
+            }
+        }
+        return result;
+    }
 
-        return parent;
+    /**
+     * 剑指 Offer 25. 合并两个排序的链表
+     *
+     * @param l1
+     * @param l2
+     * @return
+     */
+    public ListNode mergeTwoLists_(ListNode l1, ListNode l2) {
+        ListNode head = new ListNode(0), cursor = head;
+        while (l1 != null || l2 != null) {
+            if (l1 == null) {
+                cursor.next = l2;
+                break;
+            }
+            if (l2 == null) {
+                cursor.next = l1;
+                break;
+            }
+            if (l2.val < l1.val) {
+                cursor.next = l2;
+                cursor = cursor.next;
+                l2 = l2.next;
+            } else {
+                cursor.next = l1;
+                cursor = cursor.next;
+                l1 = l1.next;
+            }
+        }
+        return head.next;
     }
 
     /**
@@ -153,23 +200,6 @@ public class DoubleCursor {
             }
         }
         return result;
-    }
-
-    public class ListNode {
-        int val;
-        ListNode next;
-
-        ListNode() {
-        }
-
-        ListNode(int val) {
-            this.val = val;
-        }
-
-        ListNode(int val, ListNode next) {
-            this.val = val;
-            this.next = next;
-        }
     }
 
     /**
@@ -358,6 +388,41 @@ public class DoubleCursor {
                 return true;
             }
         }
+    }
+
+    /**
+     * 142. 环形链表 II
+     * 给定一个链表的头节点  head ，返回链表开始入环的第一个节点。 如果链表无环，则返回 null。
+     *
+     * @param head
+     * @return
+     */
+    public ListNode detectCycle(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+        ListNode slow = head, fast = head;
+        int step = 1;
+        for (; ; ++step) {
+            fast = fast.next;
+            if (fast == null) {
+                return null;
+            }
+            fast = fast.next;
+            if (fast == null) {
+                return null;
+            }
+            slow = slow.next;
+            if (slow == fast) {
+                break;
+            }
+        }
+        fast = head;
+        while (fast != slow) {
+            fast = fast.next;
+            slow = slow.next;
+        }
+        return fast;
     }
 
     /**
@@ -569,6 +634,98 @@ public class DoubleCursor {
 
     }
 
+    /**
+     * 876. 链表的中间结点
+     *
+     * @param head
+     * @return
+     */
+    public ListNode middleNode(ListNode head) {
+        if (head == null)
+            return null;
+        ListNode fast, slow;
+        fast = slow = head;
+        while (fast.next != null) {
+            if (slow.next == null || fast.next == null) {
+                return slow;
+            }
+            slow = slow.next;
+            fast = fast.next;
+            if (fast.next == null) {
+                return slow;
+            }
+            fast = fast.next;
+        }
+        return slow;
+    }
+
+    /**
+     * 剑指 Offer 22. 链表中倒数第k个节点
+     *
+     * @param head
+     * @param k
+     * @return
+     */
+    public ListNode getKthFromEnd(ListNode head, int k) {
+        ListNode fast = head;
+        for (int i = 0; i < k - 1; ++i) {
+            fast = fast.next;
+        }
+        while (fast.next != null) {
+            fast = fast.next;
+            head = head.next;
+        }
+        return head;
+    }
+
+    /**
+     * 86. 分隔链表
+     *
+     * @param head
+     * @param x
+     * @return
+     */
+    public ListNode partition(ListNode head, int x) {
+        ListNode left = new ListNode(0), right = new ListNode(0);
+        ListNode c1 = left, c2 = right;
+        while (head != null) {
+            if (head.val < x) {
+                c1.next = head;
+                head = head.next;
+                c1 = c1.next;
+                c1.next = null;
+            } else {
+                c2.next = head;
+                head = head.next;
+                c2 = c2.next;
+                c2.next = null;
+            }
+        }
+        c1.next = right.next;
+        return left.next;
+    }
+
+    /**
+     * 23. 合并K个升序链表
+     *
+     * @param lists
+     * @return
+     */
+    public ListNode mergeKLists(ListNode[] lists) {
+        return merge(lists, 0, lists.length - 1);
+    }
+
+    public ListNode merge(ListNode[] lists, int l, int r) {
+        if (l > r) {
+            return null;
+        } else if (l == r) {
+            return lists[l];
+        } else {
+            int mid = (l + r) >> 1;
+            return mergeTwoLists(merge(lists, l, mid), merge(lists, mid+1, r));
+        }
+    }
+
     public static void main(String[] args) {
         DoubleCursor doubleCursor = new DoubleCursor();
 //        doubleCursor.nextPermutation(new int[]{1,3,2});
@@ -576,7 +733,20 @@ public class DoubleCursor {
 //        doubleCursor.nextPermutation(new int[]{1,2});
 //        doubleCursor.merge(new int[]{1,2,3,3,4, 0,0}, 5, new int[]{2,4}, 2);
 //        doubleCursor.moveZeroes(new int[]{0, 1, 0, 3, 12});
-        doubleCursor.intersection(new int[]{1, 2, 2, 1}, new int[]{2, 2});
+//        doubleCursor.intersection(new int[]{1, 2, 2, 1}, new int[]{2, 2});
+        ListNode a = new ListNode(1);
+        ListNode b = new ListNode(4);
+        ListNode c = new ListNode(5);
+        a.next = b;b.next=c;
+        ListNode d = new ListNode(1);
+        ListNode e = new ListNode(3);
+        ListNode f = new ListNode(4);
+        d.next=e;e.next=f;
+        ListNode g = new ListNode(2);
+        ListNode h = new ListNode(6);
+        g.next=h;
+        ListNode[] listNodes = new ListNode[]{a,d,g};
+        doubleCursor.mergeKLists(listNodes);
 
         System.out.printf("");
     }
