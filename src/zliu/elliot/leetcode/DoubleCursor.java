@@ -474,6 +474,7 @@ public class DoubleCursor {
     /**
      * 283. 移动零
      * 给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。
+     *
      * @param nums
      */
     public void moveZeroes(int[] nums) {
@@ -757,7 +758,7 @@ public class DoubleCursor {
         if (nums.length < 1) {
             return 0;
         } else {
-            int fast = nums.length-1, slow = 0;
+            int fast = nums.length - 1, slow = 0;
             while (slow <= fast) {
                 if (nums[slow] != val) {
                     ++slow;
@@ -775,6 +776,7 @@ public class DoubleCursor {
 
     /**
      * 83. 删除排序链表中的重复元素
+     *
      * @param head
      * @return
      */
@@ -799,14 +801,15 @@ public class DoubleCursor {
 
     /**
      * 剑指 Offer 57. 和为s的两个数字
+     *
      * @param nums
      * @param target
      * @return
      */
     public int[] twoSum(int[] nums, int target) {
         int left = 0, right, temp;
-        for (;left<nums.length-1;++left) {
-            right = nums.length-1;
+        for (; left < nums.length - 1; ++left) {
+            right = nums.length - 1;
             temp = target - nums[left];
             if (nums[right] < temp) {
                 continue;
@@ -825,16 +828,17 @@ public class DoubleCursor {
 
     /**
      * 剑指 Offer II 006. 排序数组中两个数字之和
+     *
      * @param numbers
      * @param target
      * @return
      */
     public int[] twoSum_II(int[] numbers, int target) {
         int left = 0, right, temp;
-        left = binary_search(numbers, target-numbers[numbers.length-1], 0, numbers.length-2);
-        for (;left<numbers.length-1;++left) {
+        left = binary_search(numbers, target - numbers[numbers.length - 1], 0, numbers.length - 2);
+        for (; left < numbers.length - 1; ++left) {
             temp = target - numbers[left];
-            right = binary_search(numbers, temp, left+1, numbers.length-1);
+            right = binary_search(numbers, temp, left + 1, numbers.length - 1);
 //            right = numbers.length-1;
             if (numbers[right] < temp) {
                 continue;
@@ -855,12 +859,12 @@ public class DoubleCursor {
         if (numbers[r] < target) {
             return r;
         }
-        while (l<r){
-            int mid = (l+r)>>1;
+        while (l < r) {
+            int mid = (l + r) >> 1;
             if (numbers[mid] < target) {
-                l = mid+1;
-            } else if (numbers[mid]>target) {
-                r = mid-1;
+                l = mid + 1;
+            } else if (numbers[mid] > target) {
+                r = mid - 1;
             } else {
                 return mid;
             }
@@ -870,14 +874,72 @@ public class DoubleCursor {
 
     /**
      * 5. 最长回文子串
+     *
      * @param s
      * @return
      */
     public String longestPalindrome(String s) {
         int[][] dp = new int[s.length()][s.length()];
-        for (int i = 0; i < ; ++i) {
-            
+        for (int row = 0; row < s.length(); ++row) {
+            Arrays.fill(dp[row], -1);
         }
+        int start=0, end=0 ,max=0, val;
+        for (int row = 0; row < s.length(); ++row) {
+            for (int col = row; col < s.length(); ++col) {
+                val = dfs_dp(s, dp, row, col);
+                if (val > max) {
+                    max = val;
+                    start = row;
+                    end = col;
+                }
+            }
+        }
+        return s.substring(start, end+1);
+    }
+
+    public int dfs_dp(String s, int[][] dp, int i, int j) {
+        if (dp[i][j] > -1) {
+            return dp[i][j];
+        } else if (i == j) {
+            dp[i][j] = 1;
+            return dp[i][j];
+        } else {
+            boolean startEnd = s.charAt(i) == s.charAt(j);
+            if (j == i + 1) {
+                dp[i][j] = startEnd ? 2 : 0;
+                return dp[i][j];
+            } else {
+                int prev = dfs_dp(s, dp, i + 1, j - 1);
+                if (prev == 0) {
+                    dp[i][j] = 0;
+                    return dp[i][j];
+                } else {
+                    dp[i][j] = startEnd ? prev + 2 : 0;
+                    return dp[i][j];
+                }
+            }
+        }
+    }
+
+    /**
+     * 5. 最长回文子串
+     * @param s
+     * @return
+     */
+    public String longestPalindrome_(String s) {
+        if (s.length() < 1) {
+            return "";
+        } else {
+            int start, maxLen = 0;
+            for (int center = 0; center < s.length(); ++center) {
+                int odd = expandCenter(s, center, center);
+                int even = expandCenter(s, center, center+1);
+            }
+        }
+    }
+
+    public int expandCenter(String s, int l, int r) {
+        return -1;
     }
 
     public static void main(String[] args) {
