@@ -474,7 +474,6 @@ public class DoubleCursor {
     /**
      * 283. 移动零
      * 给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。
-     *
      * @param nums
      */
     public void moveZeroes(int[] nums) {
@@ -722,7 +721,162 @@ public class DoubleCursor {
             return lists[l];
         } else {
             int mid = (l + r) >> 1;
-            return mergeTwoLists(merge(lists, l, mid), merge(lists, mid+1, r));
+            return mergeTwoLists(merge(lists, l, mid), merge(lists, mid + 1, r));
+        }
+    }
+
+    /**
+     * 26. 删除有序数组中的重复项
+     *
+     * @param nums
+     * @return
+     */
+    public int removeDuplicates(int[] nums) {
+        if (nums.length < 2) {
+            return nums.length;
+        }
+        int slow = 0, fast = 1;
+        for (; fast < nums.length; ++fast) {
+            if (nums[fast] == nums[slow]) {
+                continue;
+            } else {
+                nums[++slow] = nums[fast];
+            }
+        }
+        return slow + 1;
+    }
+
+    /**
+     * 27. 移除元素
+     *
+     * @param nums
+     * @param val
+     * @return
+     */
+    public int removeElement(int[] nums, int val) {
+        if (nums.length < 1) {
+            return 0;
+        } else {
+            int fast = nums.length-1, slow = 0;
+            while (slow <= fast) {
+                if (nums[slow] != val) {
+                    ++slow;
+                } else if (nums[fast] == val) {
+                    --fast;
+                } else {
+                    nums[slow] = nums[fast];
+                    ++slow;
+                    --fast;
+                }
+            }
+            return slow;
+        }
+    }
+
+    /**
+     * 83. 删除排序链表中的重复元素
+     * @param head
+     * @return
+     */
+    public ListNode deleteDuplicates(ListNode head) {
+        if (head == null) {
+            return head;
+        } else {
+            ListNode fast = head.next, slow = head;
+            while (fast != null) {
+                if (fast.val == slow.val) {
+                    fast = fast.next;
+                } else {
+                    slow.next.val = fast.val;
+                    slow = slow.next;
+                    fast = fast.next;
+                }
+            }
+            slow.next = null;
+        }
+        return head;
+    }
+
+    /**
+     * 剑指 Offer 57. 和为s的两个数字
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int[] twoSum(int[] nums, int target) {
+        int left = 0, right, temp;
+        for (;left<nums.length-1;++left) {
+            right = nums.length-1;
+            temp = target - nums[left];
+            if (nums[right] < temp) {
+                continue;
+            }
+            while (right > left) {
+                if (nums[right] < temp) {
+                    break;
+                } else if (nums[right] == temp) {
+                    return new int[]{nums[left], nums[right]};
+                }
+                --right;
+            }
+        }
+        return new int[]{};
+    }
+
+    /**
+     * 剑指 Offer II 006. 排序数组中两个数字之和
+     * @param numbers
+     * @param target
+     * @return
+     */
+    public int[] twoSum_II(int[] numbers, int target) {
+        int left = 0, right, temp;
+        left = binary_search(numbers, target-numbers[numbers.length-1], 0, numbers.length-2);
+        for (;left<numbers.length-1;++left) {
+            temp = target - numbers[left];
+            right = binary_search(numbers, temp, left+1, numbers.length-1);
+//            right = numbers.length-1;
+            if (numbers[right] < temp) {
+                continue;
+            }
+            while (right > left) {
+                if (numbers[right] < temp) {
+                    break;
+                } else if (numbers[right] == temp) {
+                    return new int[]{left, right};
+                }
+                --right;
+            }
+        }
+        return new int[]{};
+    }
+
+    public int binary_search(int[] numbers, int target, int l, int r) {
+        if (numbers[r] < target) {
+            return r;
+        }
+        while (l<r){
+            int mid = (l+r)>>1;
+            if (numbers[mid] < target) {
+                l = mid+1;
+            } else if (numbers[mid]>target) {
+                r = mid-1;
+            } else {
+                return mid;
+            }
+        }
+        return l;
+    }
+
+    /**
+     * 5. 最长回文子串
+     * @param s
+     * @return
+     */
+    public String longestPalindrome(String s) {
+        int[][] dp = new int[s.length()][s.length()];
+        for (int i = 0; i < ; ++i) {
+            
         }
     }
 
@@ -734,19 +888,23 @@ public class DoubleCursor {
 //        doubleCursor.merge(new int[]{1,2,3,3,4, 0,0}, 5, new int[]{2,4}, 2);
 //        doubleCursor.moveZeroes(new int[]{0, 1, 0, 3, 12});
 //        doubleCursor.intersection(new int[]{1, 2, 2, 1}, new int[]{2, 2});
-        ListNode a = new ListNode(1);
-        ListNode b = new ListNode(4);
-        ListNode c = new ListNode(5);
-        a.next = b;b.next=c;
-        ListNode d = new ListNode(1);
-        ListNode e = new ListNode(3);
-        ListNode f = new ListNode(4);
-        d.next=e;e.next=f;
-        ListNode g = new ListNode(2);
-        ListNode h = new ListNode(6);
-        g.next=h;
-        ListNode[] listNodes = new ListNode[]{a,d,g};
-        doubleCursor.mergeKLists(listNodes);
+//        ListNode a = new ListNode(1);
+//        ListNode b = new ListNode(4);
+//        ListNode c = new ListNode(5);
+//        a.next = b;
+//        b.next = c;
+//        ListNode d = new ListNode(1);
+//        ListNode e = new ListNode(3);
+//        ListNode f = new ListNode(4);
+//        d.next = e;
+//        e.next = f;
+//        ListNode g = new ListNode(2);
+//        ListNode h = new ListNode(6);
+//        g.next = h;
+//        ListNode[] listNodes = new ListNode[]{a, d, g};
+//        doubleCursor.mergeKLists(listNodes);
+//        doubleCursor.twoSum_II(new int[]{2,3,4}, 6);
+        doubleCursor.longestPalindrome("cbbd");
 
         System.out.printf("");
     }
