@@ -883,7 +883,7 @@ public class DoubleCursor {
         for (int row = 0; row < s.length(); ++row) {
             Arrays.fill(dp[row], -1);
         }
-        int start=0, end=0 ,max=0, val;
+        int start = 0, end = 0, max = 0, val;
         for (int row = 0; row < s.length(); ++row) {
             for (int col = row; col < s.length(); ++col) {
                 val = dfs_dp(s, dp, row, col);
@@ -894,7 +894,7 @@ public class DoubleCursor {
                 }
             }
         }
-        return s.substring(start, end+1);
+        return s.substring(start, end + 1);
     }
 
     public int dfs_dp(String s, int[][] dp, int i, int j) {
@@ -923,6 +923,7 @@ public class DoubleCursor {
 
     /**
      * 5. 最长回文子串
+     *
      * @param s
      * @return
      */
@@ -930,19 +931,46 @@ public class DoubleCursor {
         if (s.length() < 1) {
             return "";
         } else {
-            int start, maxLen = 0;
+            int start=0, maxLen = 0, currentMax;
             for (int center = 0; center < s.length(); ++center) {
                 int odd = expandCenter(s, center, center);
-                int even = expandCenter(s, center, center+1);
+                int even = expandCenter(s, center, center + 1);
+                if (odd > maxLen) {
+                    maxLen = odd;
+                    start = center - (maxLen >> 1);
+                }
+                if (even > maxLen) {
+                    maxLen = even;
+                    start = center - (maxLen >> 1) +1;
+                }
             }
+            return s.substring(start, start+maxLen);
         }
     }
 
     public int expandCenter(String s, int l, int r) {
-        while (l>=0 && r< s.length() && s.charAt(l)==s.charAt(r)){
-            --l;++r;
+        while (l >= 0 && r < s.length() && s.charAt(l) == s.charAt(r)) {
+            --l;
+            ++r;
         }
-        return r-l+1;
+        // 一定触发了边界条件, 所以结果为当前游标跨度-2
+        return r - l -1;
+    }
+
+    /**
+     * 206. 反转链表
+     * @param head
+     * @return
+     */
+    public ListNode reverseList(ListNode head) {
+        ListNode cursor = head, reverseHead = null;
+        while (cursor != null) {
+            head = cursor.next;
+            cursor.next = reverseHead;
+            reverseHead = cursor;
+            cursor = head;
+        }
+        return reverseHead;
     }
 
     public static void main(String[] args) {
@@ -969,7 +997,7 @@ public class DoubleCursor {
 //        ListNode[] listNodes = new ListNode[]{a, d, g};
 //        doubleCursor.mergeKLists(listNodes);
 //        doubleCursor.twoSum_II(new int[]{2,3,4}, 6);
-        doubleCursor.longestPalindrome("cbbd");
+        doubleCursor.longestPalindrome_("cbbd");
 
         System.out.printf("");
     }

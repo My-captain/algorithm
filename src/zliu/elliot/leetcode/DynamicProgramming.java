@@ -238,6 +238,25 @@ public class DynamicProgramming {
         return null;
     }
 
+    /**
+     * 53. 最大子数组和
+     * @param nums
+     * @return
+     */
+    public int maxSubArray(int[] nums) {
+        int[] dp = new int[nums.length];
+        int max = Integer.MIN_VALUE;
+        for (int i = 0; i < nums.length; ++i) {
+            if (i == 0) {
+                dp[i] = nums[i];
+            } else {
+                dp[i] = Math.max(dp[i-1]+nums[i], nums[i]);
+            }
+            max = Math.max(dp[i], max);
+        }
+        return max;
+    }
+
     public static void main(String[] args) {
         int result = new DynamicProgramming().calculateMinimumHP(new int[][]{{-2, -3, 3}, {-5, -10, 1}, {10, 30, -5}});
         System.out.println(result);
