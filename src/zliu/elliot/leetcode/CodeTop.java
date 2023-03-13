@@ -11,7 +11,7 @@ public class CodeTop {
      * @return
      */
     public int findKthLargest(int[] nums, int k) {
-        new LinkedHashMap<>()
+        return -1;
     }
 
 }

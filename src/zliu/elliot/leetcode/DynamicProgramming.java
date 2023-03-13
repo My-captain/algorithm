@@ -6,6 +6,26 @@ import java.util.List;
 public class DynamicProgramming {
 
     /**
+     * 509. 斐波那契数
+     * @param n
+     * @return
+     */
+    public int fib(int n) {
+        int[] prev = new int[]{0, 1};
+        if (n < 2) {
+            return prev[n];
+        } else {
+            int temp = 0;
+            for (int i = 2; i <= n; ++i) {
+                temp = prev[0] + prev[1];
+                prev[0] = prev[1];
+                prev[1] = temp;
+            }
+            return temp;
+        }
+    }
+
+    /**
      * 64. 最小路径和
      * 给定一个包含非负整数的 m x n 网格 grid ，请找出一条从左上角到右下角的路径，使得路径上的数字总和为最小。
      * 说明：每次只能向下或者向右移动一步。
