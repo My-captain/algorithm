@@ -1,9 +1,38 @@
 package zliu.elliot.leetcode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class DynamicProgramming {
+
+    /**
+     * 322. 零钱兑换
+     * @param coins
+     * @param amount
+     * @return
+     */
+    public int coinChange(int[] coins, int amount) {
+        Arrays.sort(coins);
+        int[] dp = new int[amount + 1];
+        dp[0] = 0;
+        for (int subAmount = 1; subAmount <= amount; ++subAmount) {
+            dp[subAmount] = -1;
+            int currentMin = Integer.MAX_VALUE;
+            for (int coin : coins) {
+                if (coin > subAmount){
+                    break;
+                }
+                if (dp[subAmount-coin] == -1) {
+                    continue;
+                }
+                currentMin = Math.min(currentMin, dp[subAmount-coin]+1);
+                dp[subAmount] = currentMin;
+            }
+
+        }
+        return dp[amount];
+    }
 
     /**
      * 509. 斐波那契数
@@ -278,8 +307,8 @@ public class DynamicProgramming {
     }
 
     public static void main(String[] args) {
-        int result = new DynamicProgramming().calculateMinimumHP(new int[][]{{-2, -3, 3}, {-5, -10, 1}, {10, 30, -5}});
-        System.out.println(result);
+        DynamicProgramming dp = new DynamicProgramming();
+        dp.coinChange(new int[]{2}, 3);
     }
 
 }
