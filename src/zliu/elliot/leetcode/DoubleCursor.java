@@ -474,7 +474,6 @@ public class DoubleCursor {
     /**
      * 283. 移动零
      * 给定一个数组 nums，编写一个函数将所有 0 移动到数组的末尾，同时保持非零元素的相对顺序。
-     *
      * @param nums
      */
     public void moveZeroes(int[] nums) {
@@ -758,7 +757,7 @@ public class DoubleCursor {
         if (nums.length < 1) {
             return 0;
         } else {
-            int fast = nums.length - 1, slow = 0;
+            int fast = nums.length-1, slow = 0;
             while (slow <= fast) {
                 if (nums[slow] != val) {
                     ++slow;
@@ -776,7 +775,6 @@ public class DoubleCursor {
 
     /**
      * 83. 删除排序链表中的重复元素
-     *
      * @param head
      * @return
      */
@@ -801,7 +799,6 @@ public class DoubleCursor {
 
     /**
      * 剑指 Offer 57. 和为s的两个数字
-     *
      * @param nums
      * @param target
      * @return
@@ -828,7 +825,6 @@ public class DoubleCursor {
 
     /**
      * 剑指 Offer II 006. 排序数组中两个数字之和
-     *
      * @param numbers
      * @param target
      * @return
@@ -997,7 +993,7 @@ public class DoubleCursor {
 //        ListNode[] listNodes = new ListNode[]{a, d, g};
 //        doubleCursor.mergeKLists(listNodes);
 //        doubleCursor.twoSum_II(new int[]{2,3,4}, 6);
-        doubleCursor.longestPalindrome_("cbbd");
+        doubleCursor.longestPalindrome("cbbd");
 
         System.out.printf("");
     }
