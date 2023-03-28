@@ -1,8 +1,8 @@
 package zliu.elliot.leetcode;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
+import com.sun.jmx.remote.internal.ArrayQueue;
+
+import java.util.*;
 
 public class Tree {
 
@@ -74,6 +74,38 @@ public class Tree {
         ArrayList<Integer> preorder = new ArrayList<>();
         preorderRecursive(root, preorder);
         return preorder;
+    }
+
+    /**
+     * 102. 二叉树的层序遍历
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        ArrayList<List<Integer>> result = new ArrayList<>();
+        if (root == null) {
+            return result;
+        }
+
+        ArrayList<Integer> currentLine;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            currentLine = new ArrayList<>();
+            int lineLen = queue.size();
+            for (int i = 0; i < lineLen; ++i) {
+                TreeNode node = queue.poll();
+                currentLine.add(node.val);
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
+            }
+            result.add(currentLine);
+        }
+        return result;
     }
 
     public void preorderRecursive(TreeNode node, List<Integer> preorder) {

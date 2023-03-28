@@ -331,6 +331,26 @@ public class DynamicProgramming {
         return max;
     }
 
+    /**
+     * 121. 买卖股票的最佳时机
+     * @param prices
+     * @return
+     */
+    public int maxProfit(int[] prices) {
+        int profit = 0;
+        if (prices.length == 0) {
+            return profit;
+        }
+
+        int[] dp = new int[prices.length];
+        dp[0] = prices[0];
+        for (int i = 1; i < prices.length; ++i) {
+            dp[i] = Math.min(dp[i-1], prices[i]);
+            profit = Math.max(prices[i] - dp[i-1], profit);
+        }
+        return profit;
+    }
+
     public static void main(String[] args) {
         DynamicProgramming dp = new DynamicProgramming();
         dp.lengthOfLIS(new int[]{10,9,2,5,3,7,101,18});
