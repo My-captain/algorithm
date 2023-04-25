@@ -116,4 +116,195 @@ public class Tree {
         }
     }
 
+    /**
+     * 103. 二叉树的锯齿形层序遍历
+     * @param root
+     * @return
+     */
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        ArrayList<List<Integer>> result = new ArrayList<>();
+        Queue<TreeNode> queue = new LinkedList<>();
+        if (root == null) {
+            return result;
+        }
+        queue.add(root);
+        byte order = 0x11;
+        while (queue.size() > 0) {
+            ArrayList<Integer> line = new ArrayList<>();
+            result.add(line);
+            int size = queue.size();
+            for (int j = 0; j < size; ++j) {
+                TreeNode node = queue.poll();
+                line.add(node.val);
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
+            }
+            if (order == 0x00) {
+                Collections.reverse(line);
+                order = 0x11;
+            } else {
+                order = 0x00;
+            }
+        }
+        return result;
+    }
+
+    TreeNode lowestCommonAncestor = null;
+    /**
+     * 236. 二叉树的最近公共祖先
+     * @param root
+     * @param p
+     * @param q
+     * @return
+     */
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        postOrderLowestCommonAncestor(root, p, q);
+        return this.lowestCommonAncestor;
+    }
+
+    public boolean postOrderLowestCommonAncestor(TreeNode currentNode, TreeNode p, TreeNode q) {
+        if (this.lowestCommonAncestor != null) {
+            // 剪枝
+            return false;
+        }
+        boolean left = false, right = false;
+        if (currentNode.left != null) {
+            left = postOrderLowestCommonAncestor(currentNode.left, p, q);
+        }
+        if (this.lowestCommonAncestor != null) {
+            // 剪枝
+            return false;
+        }
+        if (currentNode.right != null) {
+            right = postOrderLowestCommonAncestor(currentNode.right, p, q);
+        }
+        if (this.lowestCommonAncestor != null) {
+            // 剪枝
+            return false;
+        }
+        if ((left && right) || ((left || right) && (currentNode == p || currentNode == q))) {
+            this.lowestCommonAncestor = currentNode;
+        }
+        if (this.lowestCommonAncestor != null) {
+            // 剪枝
+            return false;
+        }
+        return left || right || currentNode == p || currentNode == q;
+    }
+
+    /**
+     * 94. 二叉树的中序遍历
+     * @param root
+     * @return
+     */
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> res = new ArrayList<>();
+        if (root != null) {
+            recursiveInorder(root, res);
+        }
+        return res;
+    }
+
+    public void recursiveInorder(TreeNode node, List<Integer> res) {
+        if (node.left != null) {
+            recursiveInorder(node.left, res);
+        }
+        res.add(node.val);
+        if (node.right != null) {
+            recursiveInorder(node.right, res);
+        }
+    }
+
+    /**
+     * 110. 平衡二叉树
+     * @param root
+     * @return
+     */
+    public boolean isBalanced(TreeNode root) {
+        int summary = dfsBalanced(root);
+        return summary < 0;
+    }
+
+    public int dfsBalanced(TreeNode root) {
+        if (root == null) {
+            return 0;
+        } else {
+            int l = dfsBalanced(root.left);
+            if (l < 0) {
+                return l;
+            }
+            int r = dfsBalanced(root.right);
+            if (r < 0) {
+                return r;
+            }
+            return Math.abs(l-r) <= 1 ? Math.max(l, r) +1 : -1;
+        }
+    }
+
+    /**
+     * 101. 对称二叉树
+     * @param root
+     * @return
+     */
+    public boolean isSymmetric(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+        return checkSymmetric(root.left, root.right);
+    }
+
+    public boolean checkSymmetric(TreeNode l, TreeNode r) {
+        if (l == null || r == null) {
+            return l == r;
+        } else if (l.val != r.val) {
+            return false;
+        }
+        return checkSymmetric(l.left, r.right) && checkSymmetric(l.right, r.left);
+    }
+
+    int sumTreeNumbers = 0;
+    /**
+     * 129. 求根节点到叶节点数字之和
+     * @param root
+     * @return
+     */
+    public int sumNumbers(TreeNode root) {
+        if (root != null) {
+            StringBuffer sb = new StringBuffer();
+            recursiveSumTree(root, sb);
+        }
+        return sumTreeNumbers;
+    }
+
+    public void recursiveSumTree(TreeNode node, StringBuffer sb) {
+        sb.append(node.val);
+        if (node.left == null && node.right == null) {
+            sumTreeNumbers += Integer.parseInt(sb.toString());
+        } else {
+            if (node.left != null) {
+                recursiveSumTree(node.left, sb);
+            }
+            if (node.right != null ) {
+                recursiveSumTree(node.right, sb);
+            }
+        }
+        sb.deleteCharAt(sb.length()-1);
+    }
+
+
+
+    public static void main(String[] args) {
+        TreeNode a = new TreeNode(3);
+        TreeNode b = new TreeNode(9);
+        TreeNode c = new TreeNode(20);
+        TreeNode d = new TreeNode(15);
+        TreeNode e = new TreeNode(7);
+        a.left = b;a.right=c;c.left = d;c.right=e;
+        Tree tree = new Tree();tree.isSymmetric(a);
+    }
+
 }

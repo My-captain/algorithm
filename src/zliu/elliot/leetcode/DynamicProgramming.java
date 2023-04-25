@@ -8,6 +8,7 @@ public class DynamicProgramming {
 
     /**
      * 322. 零钱兑换
+     *
      * @param coins
      * @param amount
      * @return
@@ -20,13 +21,13 @@ public class DynamicProgramming {
             dp[subAmount] = -1;
             int currentMin = Integer.MAX_VALUE;
             for (int coin : coins) {
-                if (coin > subAmount){
+                if (coin > subAmount) {
                     break;
                 }
-                if (dp[subAmount-coin] == -1) {
+                if (dp[subAmount - coin] == -1) {
                     continue;
                 }
-                currentMin = Math.min(currentMin, dp[subAmount-coin]+1);
+                currentMin = Math.min(currentMin, dp[subAmount - coin] + 1);
                 dp[subAmount] = currentMin;
             }
 
@@ -36,6 +37,7 @@ public class DynamicProgramming {
 
     /**
      * 509. 斐波那契数
+     *
      * @param n
      * @return
      */
@@ -225,7 +227,7 @@ public class DynamicProgramming {
             for (int j = 1; j * j <= i; j++) {
                 min = Math.min(min, dp[i - j * j]);
             }
-            dp[i] = min+1;
+            dp[i] = min + 1;
         }
         return dp[n];
     }
@@ -234,6 +236,7 @@ public class DynamicProgramming {
      * 70. 爬楼梯
      * 假设你正在爬楼梯。需要 n 阶你才能到达楼顶。
      * 每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
+     *
      * @param n
      * @return
      */
@@ -241,15 +244,15 @@ public class DynamicProgramming {
         if (n == 0) {
             return 0;
         }
-        if (n==1){
+        if (n == 1) {
             return 1;
         }
-        if (n==2){
+        if (n == 2) {
             return 2;
         }
-        int temp1 = 1, temp2=2, temp3=0;
+        int temp1 = 1, temp2 = 2, temp3 = 0;
         for (int i = 2; i < n; ++i) {
-            temp3 = temp2+temp1;
+            temp3 = temp2 + temp1;
             temp1 = temp2;
             temp2 = temp3;
         }
@@ -258,18 +261,19 @@ public class DynamicProgramming {
 
     public int rob(int[] nums) {
         int len = nums.length;
-        int[] f = new int[len+2];
+        int[] f = new int[len + 2];
         f[0] = f[1] = 0;
         f[2] = nums[0];
         for (int i = 1; i < len; ++i) {
-            f[i+2] = Math.max(f[i-1], f[i]) + nums[i];
+            f[i + 2] = Math.max(f[i - 1], f[i]) + nums[i];
         }
-        return Math.max(f[len+1], f[len]);
+        return Math.max(f[len + 1], f[len]);
     }
 
     /**
      * 118. 杨辉三角
      * 给定一个非负整数 numRows，生成「杨辉三角」的前 numRows 行。
+     *
      * @param numRows
      * @return
      */
@@ -289,6 +293,7 @@ public class DynamicProgramming {
 
     /**
      * 53. 最大子数组和
+     *
      * @param nums
      * @return
      */
@@ -299,7 +304,7 @@ public class DynamicProgramming {
             if (i == 0) {
                 dp[i] = nums[i];
             } else {
-                dp[i] = Math.max(dp[i-1]+nums[i], nums[i]);
+                dp[i] = Math.max(dp[i - 1] + nums[i], nums[i]);
             }
             max = Math.max(dp[i], max);
         }
@@ -308,6 +313,7 @@ public class DynamicProgramming {
 
     /**
      * 300. 最长递增子序列
+     *
      * @param nums
      * @return
      */
@@ -333,6 +339,7 @@ public class DynamicProgramming {
 
     /**
      * 121. 买卖股票的最佳时机
+     *
      * @param prices
      * @return
      */
@@ -345,15 +352,72 @@ public class DynamicProgramming {
         int[] dp = new int[prices.length];
         dp[0] = prices[0];
         for (int i = 1; i < prices.length; ++i) {
-            dp[i] = Math.min(dp[i-1], prices[i]);
-            profit = Math.max(prices[i] - dp[i-1], profit);
+            dp[i] = Math.min(dp[i - 1], prices[i]);
+            profit = Math.max(prices[i] - dp[i - 1], profit);
         }
         return profit;
     }
 
+    /**
+     * 122. 买卖股票的最佳时机 II
+     *
+     * @param prices
+     * @return
+     */
+    public int maxProfitII(int[] prices) {
+        int[][] dp = new int[prices.length][2];
+        dp[0][0] = 0;
+        dp[0][1] = -prices[0];
+        for (int i = 1; i < prices.length; ++i) {
+            dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
+            dp[i][1] = Math.max(dp[i - 1][0] + prices[i], dp[i][1]);
+        }
+        return dp[prices.length - 1][0];
+    }
+
+    /**
+     * 123. 买卖股票的最佳时机 III
+     *
+     * @param prices
+     * @return
+     */
+    public int maxProfitIII(int[] prices) {
+        int[][] dp = new int[prices.length][3];
+        return -1;
+    }
+
+    /**
+     * 42. 接雨水
+     *
+     * @param height
+     * @return
+     */
+    public int trap(int[] height) {
+        if (height.length < 3) {
+            return 0;
+        }
+        int len = height.length;
+        int[][] margin = new int[len][2];
+        margin[0][0] = height[0];
+        margin[len - 1][1] = height[len - 1];
+        for (int i = 1; i < len; ++i) {
+            margin[i][0] = Math.max(margin[i - 1][0], height[i]);
+        }
+        for (int i = len - 2; i >= 0; --i) {
+            margin[i][1] = Math.max(margin[i + 1][1], height[i]);
+        }
+        int ans = 0;
+        for (int i = 1; i < len - 1; ++i) {
+            ans += Math.min(margin[i][0], margin[i][1]) - height[i];
+        }
+        return ans;
+    }
+
     public static void main(String[] args) {
         DynamicProgramming dp = new DynamicProgramming();
-        dp.lengthOfLIS(new int[]{10,9,2,5,3,7,101,18});
+//        dp.lengthOfLIS(new int[]{10, 9, 2, 5, 3, 7, 101, 18});
+//        dp.maxProfitIII(new int[]{1,2,4,2,5,7,2,4,9,0});
+        dp.trap(new int[]{4, 2, 0, 3, 2, 5});
     }
 
 }

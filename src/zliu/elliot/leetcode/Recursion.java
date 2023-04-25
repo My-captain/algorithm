@@ -35,4 +35,62 @@ public class Recursion {
         return Math.max(l, r) + root.val;
     }
 
+    /**
+     * 394. 字符串解码
+     * @param s
+     * @return
+     */
+    public String decodeString(String s) {
+        if (s.length() < 1) {
+            return "";
+        }
+        StringBuffer result = new StringBuffer(s.length());
+        for (int i = 0; i < s.length(); ++i) {
+            char c = s.charAt(i);
+            if (c <= '9' && c > '0') {
+                i = parseZipStr(s, i, result);
+            } else {
+                result.append(c);
+            }
+        }
+        return result.toString();
+    }
+
+    /**
+     * 递归解析被压缩的子串
+     * @param s 原串
+     * @param cursor 子串的startIndex
+     * @param sb 上层传来的StringBuffer
+     * @return 解析完子串后的原串下标索引
+     */
+    public int parseZipStr(String s, int cursor, StringBuffer sb) {
+        int iStart = s.indexOf('[', cursor + 1);
+        int cnt = Integer.parseInt(s.substring(cursor, iStart));
+        StringBuffer currentResult = new StringBuffer();
+        int i = iStart+1;
+        for (; i < s.length(); ++i) {
+            char c = s.charAt(i);
+            if (c == ']') {
+                // 此段匹配结束
+                break;
+            } else if (c <= '9' && c > '0') {
+                // 嵌套
+                i = parseZipStr(s, i, currentResult);
+            } else {
+                // 普通
+                currentResult.append(s.charAt(i));
+            }
+        }
+        for (int j = 0; j < cnt; ++j) {
+            sb.append(currentResult);
+        }
+        return i;
+    }
+
+    public static void main(String[] args) {
+        Recursion recursion = new Recursion();
+        System.out.println(recursion.decodeString("z1[abc 2[ def3[ ghi]]]"));
+        System.out.println(recursion.decodeString("1[]"));
+    }
+
 }

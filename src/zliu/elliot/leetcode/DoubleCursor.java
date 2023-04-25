@@ -969,8 +969,43 @@ public class DoubleCursor {
         return reverseHead;
     }
 
+    /**
+     * 92. 反转链表 II
+     * @param head
+     * @param left
+     * @param right
+     * @return
+     */
+    public ListNode reverseBetween(ListNode head, int left, int right) {
+        if (right - left == 0) {
+            return head;
+        }
+        ListNode fakeHead = new ListNode(-1, head);
+        ListNode prev = fakeHead, first, tail = null, temp;
+        for (int i = 0; i < left-1; ++i) {
+            prev = prev.next;
+        }
+        first = prev.next;
+        tail = prev.next.next;
+        temp = prev.next.next;
+        for (int i = left; i < right; ++i) {
+            tail = tail.next;
+            temp.next = prev.next;
+            prev.next = temp;
+            temp = tail;
+        }
+        first.next = tail;
+        return fakeHead.next;
+    }
+
     public static void main(String[] args) {
         DoubleCursor doubleCursor = new DoubleCursor();
+        ListNode node5 = new ListNode(5, null);
+        ListNode node4 = new ListNode(4, node5);
+        ListNode node3 = new ListNode(3, node4);
+        ListNode node2 = new ListNode(2, node3);
+        ListNode node1 = new ListNode(1, node2);
+        doubleCursor.reverseBetween(node1, 2, 4);
 //        doubleCursor.nextPermutation(new int[]{1,3,2});
 //        doubleCursor.nextPermutation(new int[]{2,3, 1});
 //        doubleCursor.nextPermutation(new int[]{1,2});
@@ -993,9 +1028,9 @@ public class DoubleCursor {
 //        ListNode[] listNodes = new ListNode[]{a, d, g};
 //        doubleCursor.mergeKLists(listNodes);
 //        doubleCursor.twoSum_II(new int[]{2,3,4}, 6);
-        doubleCursor.longestPalindrome("cbbd");
+//        doubleCursor.longestPalindrome("cbbd");
 
-        System.out.printf("");
+//        System.out.printf("");
     }
 
 }
