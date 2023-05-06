@@ -1,5 +1,7 @@
 package zliu.elliot.leetcode;
 
+import com.sun.org.apache.xml.internal.dtm.ref.DTMDefaultBaseIterators;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -258,14 +260,6 @@ public class Backtrack {
         }
     }
 
-    public List<String> letterCombinations(String digits) {
-//        new LinkedList<>()
-        String[] strings = new String[]{"abc", "", ""};
-        HashMap<Integer, String> kStr = new HashMap<Integer, String>();
-        kStr.put(2, "abc");
-        return null;
-    }
-
     List<List<Integer>> sumCombination = null;
 
     /**
@@ -378,29 +372,36 @@ public class Backtrack {
      */
     public List<List<Integer>> permuteUnique(int[] nums) {
         ArrayList<List<Integer>> result = new ArrayList<>();
-        dfsPermuteUnique(nums, 0, result);
+        ArrayList<Integer> permutation = new ArrayList<>();
+        boolean[] visited = new boolean[nums.length];
+        // 让相同的数字相邻, 才得以去重
+        Arrays.sort(nums);
+        dfsPermuteUnique(nums, 0, result, permutation, visited);
         return result;
     }
 
-    public void dfsPermuteUnique(int[] nums, int current, List<List<Integer>> result){
+    public void dfsPermuteUnique(int[] nums, int current, List<List<Integer>> result, List<Integer> permutation, boolean[] visited){
         if (current == nums.length) {
-            result.add(Arrays.stream(nums).boxed().collect(Collectors.toList()));
+            result.add(new ArrayList<>(permutation));
             return;
         }
-        for (int idx = current; idx < nums.length; ++idx) {
-            if (idx > 0 && nums[idx] == nums[idx-1]) {
-                dfsPermuteUnique(nums, current+1, result);
+        for (int idx = 0; idx < nums.length; ++idx) {
+            if (visited[idx]) {
                 continue;
             }
-
-            int temp = nums[current];
-            nums[current] = nums[idx];
-            nums[idx] = temp;
-            dfsPermuteUnique(nums, current+1, result);
-
-            temp = nums[current];
-            nums[current] = nums[idx];
-            nums[idx] = temp;
+            /*
+		    用于去重：
+		    1.对于相同的数字规定了访问的顺序, 必须前者已被访问, 自己才能被访问
+		    2.当条件符合时, 说明nums[idx-1]这棵子树已经DFS完毕, 此时属于同层剪枝
+   		    */
+            if (idx > 0 && nums[idx] == nums[idx-1] && !visited[idx-1]) {
+                continue;
+            }
+            permutation.add(nums[idx]);
+            visited[idx] = true;
+            dfsPermuteUnique(nums, current+1, result, permutation, visited);
+            visited[idx] = false;
+            permutation.remove(permutation.size()-1);
         }
     }
 
@@ -440,6 +441,250 @@ public class Backtrack {
         }
     }
 
+    /**
+     * 40. 组合总和 II
+     * @param candidates
+     * @param target
+     * @return
+     */
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        Arrays.sort(candidates);
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> permutation = new ArrayList<>();
+        dfsCombinationSumII(candidates, 0, 0, target, new boolean[candidates.length], result, permutation);
+        System.out.println(result);
+        return result;
+    }
+
+    private void dfsCombinationSumII(int[] nums, int currentSum, int current, int target, boolean[] visited, List<List<Integer>> result, List<Integer> candidates) {
+        if (currentSum == target) {
+            result.add(new ArrayList<>(candidates));
+            return;
+        }
+        if (current > nums.length - 1|| currentSum > target || currentSum+nums[current] > target) {
+            return;
+        }
+        if (current > 0 && nums[current] == nums[current-1] && !visited[current-1]) {
+            // 同层剪枝, 1_a、1_b、2、5、6、7
+            // 1_a没选,1_b一定不能选
+            dfsCombinationSumII(nums, currentSum, current+1, target, visited, result, candidates);
+        } else {
+            dfsCombinationSumII(nums, currentSum, current+1, target, visited, result, candidates);
+            visited[current] = true;
+            candidates.add(nums[current]);
+            dfsCombinationSumII(nums, currentSum+nums[current], current+1, target, visited, result, candidates);
+            visited[current] = false;
+            candidates.remove(candidates.size()-1);
+        }
+    }
+
+    /**
+     * 77. 组合
+     * @param n
+     * @param k
+     * @return
+     */
+    public List<List<Integer>> combine(int n, int k) {
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> combine = new ArrayList<>();
+        dfsCombine(n, 1, k, result, combine);
+        System.out.println(result);
+        return result;
+    }
+
+    public void dfsCombine(int n, int current, int k, List<List<Integer>> result, List<Integer> combine) {
+        if (combine.size() == k) {
+            result.add(new ArrayList<>(combine));
+            return;
+        }
+        if (current > n || (n - current + 1 + combine.size()) < k) {
+            return;
+        }
+        combine.add(current);
+        dfsCombine(n, current + 1, k, result, combine);
+        combine.remove(combine.size() - 1);
+        if (n-current+1+combine.size() == k) {
+            // 此项必须加入
+            return;
+        }
+        dfsCombine(n, current + 1, k, result, combine);
+    }
+
+    String[] ch2Letter = new String[] {"abc", "def","ghi","jkl","mno", "pqrs", "tuv", "wxyz"};
+    public List<String> letterCombinations(String digits) {
+        List<String> result = new ArrayList<>();
+        if (digits.length() < 1) {
+            return result;
+        }
+        StringBuffer sb = new StringBuffer();
+        dfsLetterCombine(0, digits, sb, result);
+        return result;
+    }
+
+    public void dfsLetterCombine(int current, String digits, StringBuffer sb, List<String> result) {
+        if (current == digits.length()) {
+            result.add(sb.toString());
+            return;
+        }
+        String digitsLetters = getDigitsLetters(digits.charAt(current));
+        for (int i = 0; i < digitsLetters.length(); ++i) {
+            sb.append(digitsLetters.charAt(i));
+            dfsLetterCombine(current+1, digits, sb, result);
+            sb.deleteCharAt(sb.length()-1);
+        }
+    }
+    private String getDigitsLetters(char c) {
+        return ch2Letter[c-'2'];
+    }
+
+    /**
+     * 131. 分割回文串
+     * @param s
+     * @return
+     */
+    public List<List<String>> partition(String s) {
+        List<List<String>> result = new ArrayList<>();
+        List<String> partition = new ArrayList<>();
+        dfsPartition(s, 0, partition, result);
+        return result;
+    }
+
+    public void dfsPartition(String s, int current, List<String> partition, List<List<String>> result) {
+        if (current == s.length()) {
+            result.add(new ArrayList<>(partition));
+        }
+        for (int i = current; i < s.length(); ++i) {
+            if (tenet(s, current, i)) {
+                partition.add(s.substring(current, i+1));
+                dfsPartition(s, i+1, partition, result);
+                partition.remove(partition.size()-1);
+            }
+        }
+    }
+
+    public boolean tenet(String s, int start, int end) {
+        if (end - start > 0) {
+            int mid = (end-start) >> 1;
+            for (int i = 0; i <= mid; ++i) {
+                if (s.charAt(start+i) != s.charAt(end-i)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 306. 累加数
+     * @param num
+     * @return
+     */
+    public boolean isAdditiveNumber(String num) {
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> path = new ArrayList<>();
+        dfsAdditiveNumber(num, 0, path, result);
+        return result.size()>0;
+    }
+
+    public void dfsAdditiveNumber(String num, int current, List<Integer> path, List<List<Integer>> result) {
+        if (current == num.length()) {
+            if (path.size()>2){
+                result.add(new ArrayList<>(path));
+            }
+            return;
+        }
+        if (num.charAt(current) == '0') {
+            if (path.size() > 1 && (path.get(path.size()-1) != 0 || path.get(path.size()-2) != 0)) {
+                return;
+            }
+            path.add(0);
+            dfsAdditiveNumber(num, current+1, path, result);
+            path.remove(path.size()-1);
+        } else {
+            for (int i = current; i < num.length(); ++i) {
+                if (path.size()+1+num.length()-1-i < 3) {
+                    // 已有数字+当前数字+剩余数字必须>=3
+                    return;
+                }
+                int cursor = Integer.parseInt(num.substring(current, i + 1));
+                if (path.size() > 1 && path.get(path.size()-1)+path.get(path.size()-2) != cursor) {
+                    continue;
+                }
+                path.add(cursor);
+                dfsAdditiveNumber(num, i+1, path, result);
+                path.remove(path.size()-1);
+            }
+        }
+    }
+
+    public String stringAdd(String s, int firstStart, int firstEnd, int secondStart, int secondEnd) {
+        StringBuffer third = new StringBuffer();
+        int carry = 0, cur = 0;
+        while (firstEnd >= firstStart || secondEnd >= secondStart || carry != 0) {
+            cur = carry;
+            if (firstEnd >= firstStart) {
+                cur += s.charAt(firstEnd) - '0';
+                --firstEnd;
+            }
+            if (secondEnd >= secondStart) {
+                cur += s.charAt(secondEnd) - '0';
+                --secondEnd;
+            }
+            carry = cur / 10;
+            cur %= 10;
+            third.append((char) (cur + '0'));
+        }
+        third.reverse();
+        return third.toString();
+    }
+
+    int maxGold = 0;
+    /**
+     * 1219. 黄金矿工
+     * @param grid
+     * @return
+     */
+    public int getMaximumGold(int[][] grid) {
+        if (grid.length < 1) {
+            return 0;
+        }
+        boolean[][] visited = new boolean[grid.length][grid[0].length];
+        for (int row = 0; row < grid.length; ++row) {
+            for (int col = 0; col < grid[0].length; ++col) {
+                if (grid[row][col] > 0) {
+                    visited[row][col] = true;
+                    dfsMaxGold(row, col, grid[row][col], grid, visited);
+                    visited[row][col] = false;
+                }
+            }
+        }
+        return maxGold;
+    }
+
+    public void dfsMaxGold(int currentRow, int currentCol, int sum, int[][] grid, boolean[][] visited) {
+        this.maxGold = Math.max(this.maxGold, sum);
+        if (currentRow - 1 >= 0 && !visited[currentRow-1][currentCol] && grid[currentRow-1][currentCol]>0) {
+            visited[currentRow-1][currentCol] = true;
+            dfsMaxGold(currentRow-1, currentCol, sum+grid[currentRow-1][currentCol], grid, visited);
+            visited[currentRow-1][currentCol] = false;
+        }
+        if (currentRow + 1 < grid.length && !visited[currentRow+1][currentCol] && grid[currentRow+1][currentCol]>0) {
+            visited[currentRow+1][currentCol] = true;
+            dfsMaxGold(currentRow+1, currentCol, sum+grid[currentRow+1][currentCol], grid, visited);
+            visited[currentRow+1][currentCol] = false;
+        }
+        if (currentCol - 1 >= 0 && !visited[currentRow][currentCol-1] && grid[currentRow][currentCol-1]>0) {
+            visited[currentRow][currentCol-1] = true;
+            dfsMaxGold(currentRow,currentCol-1, sum+grid[currentRow][currentCol-1], grid, visited);
+            visited[currentRow][currentCol-1] = false;
+        }
+        if (currentCol + 1 < grid[0].length && !visited[currentRow][currentCol+1] && grid[currentRow][currentCol+1]>0) {
+            visited[currentRow][currentCol+1] = true;
+            dfsMaxGold(currentRow, currentCol+1, sum+grid[currentRow][currentCol+1], grid, visited);
+            visited[currentRow][currentCol+1] = false;
+        }
+    }
+
 
     public static void main(String[] args) {
         Backtrack backtrack = new Backtrack();
@@ -452,7 +697,15 @@ public class Backtrack {
 //        backtrack.combinationSum(new int[]{2,3,6,7}, 7);
 //        boolean exist = backtrack.exist(new char[][]{{'A', 'B', 'C', 'E'}, {'S', 'F', 'C', 'S'}, {'A', 'D', 'E', 'E'}}, "ABCB");
 //        System.out.println(exist);
-        backtrack.permuteUnique(new int[]{1,1,2});
+//        backtrack.permuteUnique(new int[]{1,1,2});
+//        backtrack.combinationSum2(new int[]{10,1,1,2,7,6,1,5}, 8);
+//        backtrack.combine(10, 2);
+//        System.out.println(backtrack.tenet("a"));
+//        System.out.println(backtrack.tenet("aab"));
+//        System.out.println(backtrack.tenet("aba"));
+//        backtrack.partition("aab");
+//        backtrack.isAdditiveNumber("1023");
+        backtrack.getMaximumGold(new int[][]{{0,6,0},{5,8,7},{0,9,0}});
     }
 
 }

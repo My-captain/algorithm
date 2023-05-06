@@ -1,5 +1,8 @@
 package zliu.elliot.leetcode;
 
+import java.util.Comparator;
+import java.util.TreeSet;
+
 public class Search {
 
     /**
@@ -88,6 +91,29 @@ public class Search {
             }
         }
         return ans;
+    }
+
+    class MyCalendarBinarySearch {
+        TreeSet<int[]> booked = null;
+        public MyCalendarBinarySearch(){
+            this.booked = new TreeSet<>(Comparator.comparingInt(a -> a[0]));
+        }
+
+        public boolean book(int start, int end) {
+            if (this.booked.isEmpty()) {
+                this.booked.add(new int[] {start, end});
+                return true;
+            }
+            int[] temp = {end, 0};
+            int[] next = this.booked.ceiling(temp);
+            int[] prev = next == null ? booked.last():booked.lower(next);
+            if (prev != null && prev[1] > start) {
+                return false;
+            }
+            this.booked.add(new int[]{start,end});
+            return true;
+        }
+
     }
 
     public static void main(String[] args) {

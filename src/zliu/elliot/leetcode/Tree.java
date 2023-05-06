@@ -295,16 +295,110 @@ public class Tree {
         sb.deleteCharAt(sb.length()-1);
     }
 
+    /**
+     * 112. 路径总和
+     * @param root
+     * @param targetSum
+     * @return
+     */
+    public boolean hasPathSum(TreeNode root, int targetSum) {
+        if (root == null) {
+            return false;
+        }
+        return dfsPathSum(root, 0, targetSum);
+    }
+    private boolean dfsPathSum(TreeNode node, int currentSum, int targetSum) {
+        if (node.left == null && node.right == null) {
+            return (currentSum+node.val ) == targetSum;
+        }
+        if (node.left != null && dfsPathSum(node.left, currentSum+node.val, targetSum)) {
+            return true;
+        }
+        if (node.right != null && dfsPathSum(node.right, currentSum+node.val, targetSum)) {
+            return true;
+        }
+        return false;
+    }
 
+    List<List<Integer>> res = new ArrayList<>();
+    /**
+     * 113. 路径总和 II
+     * @param root
+     * @param targetSum
+     * @return
+     */
+    public List<List<Integer>> pathSum(TreeNode root, int targetSum) {
+        ArrayList<Integer> pathMem = new ArrayList<>();
+        if (root == null) {
+            return res;
+        }
+        dfsPathSumSearch(root, 0, targetSum, pathMem);
+        return res;
+    }
+    private void dfsPathSumSearch(TreeNode node, int currentSum, int targetSum, List<Integer> memory) {
+        memory.add(node.val);
+        if (node.left == null && node.right == null) {
+            // leaf node
+            if (currentSum + node.val == targetSum) {
+                this.res.add(new ArrayList<>(memory));
+            }
+        } else {
+            if (node.left != null) {
+                dfsPathSumSearch(node.left, currentSum + node.val, targetSum, memory);
+            }
+            if (node.right != null ){
+                dfsPathSumSearch(node.right, currentSum + node.val, targetSum, memory);
+            }
+        }
+        memory.remove(memory.size()-1);
+    }
+
+    public boolean isValidBST(TreeNode root) {
+        if (root == null) {
+            return true;
+        } else {
+            return dfsValidateBST(root, Long.MIN_VALUE, Long.MAX_VALUE);
+        }
+    }
+
+    private boolean dfsValidateBST(TreeNode node, long lower, long ceil) {
+        if (node.val <= lower || node.val >= ceil) {
+            return false;
+        } else {
+            if (node.left != null && !dfsValidateBST(node.left, lower, node.val)) {
+                return false;
+            }
+            if (node.right != null && !dfsValidateBST(node.right, node.val, ceil)) {
+                return false;
+            }
+            return true;
+        }
+    }
+
+    /**
+     * 226. 翻转二叉树
+     * @param root
+     * @return
+     */
+    public TreeNode invertTree(TreeNode root) {
+        if (root == null) {
+            return null;
+        } else {
+            TreeNode tmp = root.left;
+            root.left = root.right;
+            root.right = tmp;
+            invertTree(root.left);
+            invertTree(root.right);
+            return root;
+        }
+    }
 
     public static void main(String[] args) {
-        TreeNode a = new TreeNode(3);
-        TreeNode b = new TreeNode(9);
-        TreeNode c = new TreeNode(20);
-        TreeNode d = new TreeNode(15);
-        TreeNode e = new TreeNode(7);
-        a.left = b;a.right=c;c.left = d;c.right=e;
-        Tree tree = new Tree();tree.isSymmetric(a);
+        TreeNode a = new TreeNode(1);
+        TreeNode b = new TreeNode(2);
+        TreeNode c = new TreeNode(3);
+        a.left = b;a.right=c;
+        Tree tree = new Tree();tree.pathSum(a, 4);
     }
 
 }
