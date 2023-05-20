@@ -1,7 +1,5 @@
 package zliu.elliot.leetcode;
 
-import com.sun.jmx.remote.internal.ArrayQueue;
-
 import java.util.*;
 
 public class Tree {
@@ -106,6 +104,35 @@ public class Tree {
             result.add(currentLine);
         }
         return result;
+    }
+
+    /**
+     * 199. 二叉树的右视图
+     * @param root
+     * @return
+     */
+    public List<Integer> rightSideView(TreeNode root) {
+        List<Integer> res = new ArrayList<>();
+        if (root == null) {
+            return res;
+        }
+        Deque<TreeNode> queue = new ArrayDeque<>();
+        queue.add(root);
+        while (queue.size() > 0) {
+            int size = queue.size();
+            TreeNode current = null;
+            for (int i = 0; i < size; ++i) {
+                current = queue.pollFirst();
+                if (current.left != null) {
+                    queue.offerLast(current.left);
+                }
+                if (current.right != null) {
+                    queue.offerLast(current.right);
+                }
+            }
+            res.add(current.val);
+        }
+        return res;
     }
 
     public void preorderRecursive(TreeNode node, List<Integer> preorder) {

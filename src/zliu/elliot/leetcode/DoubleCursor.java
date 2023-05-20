@@ -1,9 +1,6 @@
 package zliu.elliot.leetcode;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class DoubleCursor {
 
@@ -774,6 +771,15 @@ public class DoubleCursor {
     }
 
     /**
+     * 82. 删除排序链表中的重复元素 II
+     * @param head
+     * @return
+     */
+    public ListNode deleteDuplicatesII(ListNode head) {
+        return null;
+    }
+
+    /**
      * 83. 删除排序链表中的重复元素
      * @param head
      * @return
@@ -969,6 +975,24 @@ public class DoubleCursor {
         return reverseHead;
     }
 
+    /**
+     * 25. K 个一组翻转链表
+     * @param head
+     * @param k
+     * @return
+     */
+    public ListNode reverseKGroup(ListNode head, int k) {
+        if (k<2) {
+            return head;
+        }
+        ListNode newHead = new ListNode();
+        Stack<ListNode> stack = new Stack<>();
+        for (int i = 0; i < k; ++i) {
+            
+        }
+        return null;
+    }
+
     public static void main(String[] args) {
         DoubleCursor doubleCursor = new DoubleCursor();
 //        doubleCursor.nextPermutation(new int[]{1,3,2});
@@ -977,25 +1001,28 @@ public class DoubleCursor {
 //        doubleCursor.merge(new int[]{1,2,3,3,4, 0,0}, 5, new int[]{2,4}, 2);
 //        doubleCursor.moveZeroes(new int[]{0, 1, 0, 3, 12});
 //        doubleCursor.intersection(new int[]{1, 2, 2, 1}, new int[]{2, 2});
-//        ListNode a = new ListNode(1);
-//        ListNode b = new ListNode(4);
-//        ListNode c = new ListNode(5);
-//        a.next = b;
-//        b.next = c;
-//        ListNode d = new ListNode(1);
-//        ListNode e = new ListNode(3);
-//        ListNode f = new ListNode(4);
-//        d.next = e;
-//        e.next = f;
-//        ListNode g = new ListNode(2);
-//        ListNode h = new ListNode(6);
-//        g.next = h;
+        ListNode a = new ListNode(1);
+        ListNode b = new ListNode(2);
+        ListNode c = new ListNode(3);
+        a.next = b;
+        b.next = c;
+        ListNode d = new ListNode(4);
+        ListNode e = new ListNode(5);
+        ListNode f = new ListNode(6);
+        c.next = d;
+        d.next = e;
+        e.next = f;
+        ListNode g = new ListNode(7);
+        ListNode h = new ListNode(8);
+        f.next = g;
+        g.next = h;
 //        ListNode[] listNodes = new ListNode[]{a, d, g};
 //        doubleCursor.mergeKLists(listNodes);
 //        doubleCursor.twoSum_II(new int[]{2,3,4}, 6);
-        doubleCursor.longestPalindrome("cbbd");
+//        doubleCursor.longestPalindrome("cbbd");
+        doubleCursor.reverseKGroup(a, 3);
 
-        System.out.printf("");
+//        System.out.printf("");
     }
 
 }

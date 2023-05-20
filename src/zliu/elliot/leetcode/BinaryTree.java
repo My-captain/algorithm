@@ -41,15 +41,60 @@ public class BinaryTree {
         return result;
     }
 
-
-
-
-
-
-
+    /**
+     * 56. 合并区间
+     * @param intervals
+     * @return
+     */
+    public int[][] merge(int[][] intervals) {
+        int num = intervals.length;
+        if (num < 2) {
+            return intervals;
+        }
+        Arrays.sort(intervals, new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                return o1[0]-o2[0];
+            }
+        });
+        ArrayList<int[]> res = new ArrayList<>();
+        res.add(intervals[0]);
+        for (int i = 1; i < num; ++i) {
+            int[] last = res.get(res.size() - 1);
+            int[] current = intervals[i];
+            if (last[1] >= current[0]) {
+                last[1] = Math.max(current[1], last[1]);
+            } else {
+                res.add(current);
+            }
+        }
+        return res.toArray(new int[0][]);
+    }
 
     public static void main(String[] args) {
 
+        String s = UUID.randomUUID().toString().replace('-', ' ');
+        System.out.printf(s);
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
