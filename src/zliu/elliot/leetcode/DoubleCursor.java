@@ -969,6 +969,16 @@ public class DoubleCursor {
         return reverseHead;
     }
 
+    private ListNode reverse(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode last = reverse(head.next);
+        head.next.next = head;
+        head.next = null;
+        return last;
+    }
+
     /**
      * 92. 反转链表 II
      * @param head

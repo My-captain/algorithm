@@ -87,10 +87,44 @@ public class Recursion {
         return i;
     }
 
+    public int[] quickSort(int[] arr, int l, int r) {
+        if (l<r) {
+            int partition = partition(arr, l, r);
+            quickSort(arr, l, partition-1);
+            quickSort(arr,partition+1,r);
+        }
+        return arr;
+    }
+
+    private int partition(int[] arr, int l, int r) {
+        int pivot = l;
+        int index = pivot+1;
+        for (int i = index; i <= r; ++i) {
+            if (arr[i] < arr[pivot]) {
+                swapArr(arr, index, i);
+                ++index;
+            }
+        }
+        swapArr(arr, pivot, index-1);
+        return index-1;
+    }
+
+    private void swapArr(int[] arr, int i, int j){
+        if (i==j) {
+            return;
+        }
+        int tmp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
+    }
+
     public static void main(String[] args) {
         Recursion recursion = new Recursion();
-        System.out.println(recursion.decodeString("z1[abc 2[ def3[ ghi]]]"));
-        System.out.println(recursion.decodeString("1[]"));
+//        System.out.println(recursion.decodeString("z1[abc 2[ def3[ ghi]]]"));
+//        System.out.println(recursion.decodeString("1[]"));
+        int[] arr = {5, 7, 8, 32, 54, 1, 5, 8, 2};
+        recursion.quickSort(arr, 0, arr.length-1);
+        System.out.println(arr);
     }
 
 }

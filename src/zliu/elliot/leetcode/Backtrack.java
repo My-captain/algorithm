@@ -685,6 +685,35 @@ public class Backtrack {
         }
     }
 
+    /**
+     * 967. 连续差相同的数字
+     * @param n
+     * @param k
+     * @return
+     */
+    public int[] numsSameConsecDiff(int n, int k) {
+        StringBuffer sb = new StringBuffer(n);
+        List<Integer> result = new ArrayList<>();
+        for (int i = 1; i < 10; ++i) {
+            dfsSameConsecDiff(i, 0, n, k, sb, result);
+        }
+        return result.stream().mapToInt(Integer::intValue).toArray();
+    }
+
+    private void dfsSameConsecDiff(int currentNum, int currentIdx, int n, int k, StringBuffer sb, List<Integer> result) {
+        sb.append(currentNum);
+        if (currentIdx == n - 1) {
+            result.add(Integer.parseInt(sb.toString()));
+        } else {
+            if (currentNum - k >= 0) {
+                dfsSameConsecDiff(currentNum - k, currentIdx + 1, n, k, sb, result);
+            }
+            if (k > 0 && currentNum + k < 10) {
+                dfsSameConsecDiff(currentNum + k, currentIdx + 1, n, k, sb, result);
+            }
+        }
+        sb.deleteCharAt(sb.length() - 1);
+    }
 
     public static void main(String[] args) {
         Backtrack backtrack = new Backtrack();
@@ -705,7 +734,8 @@ public class Backtrack {
 //        System.out.println(backtrack.tenet("aba"));
 //        backtrack.partition("aab");
 //        backtrack.isAdditiveNumber("1023");
-        backtrack.getMaximumGold(new int[][]{{0,6,0},{5,8,7},{0,9,0}});
+//        backtrack.getMaximumGold(new int[][]{{0,6,0},{5,8,7},{0,9,0}});
+        backtrack.numsSameConsecDiff(2, 1);
     }
 
 }
