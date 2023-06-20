@@ -162,8 +162,38 @@ public class Tree {
      * @return
      */
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        postOrderLowestCommonAncestor(root, p, q);
-        return this.lowestCommonAncestor;
+//        postOrderLowestCommonAncestor(root, p, q);
+//        return this.lowestCommonAncestor;
+        if (root == null || root == p || root == q) {
+            return root;
+        }
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+        if (left != null && right != null) {
+            return root;
+        }
+        if (left != null) {
+            return left;
+        } else {
+            return right;
+        }
+    }
+
+    /**
+     * 235. 二叉搜索树的最近公共祖先
+     * @param root
+     * @param p
+     * @param q
+     * @return
+     */
+    public TreeNode lowestCommonAncestorII(TreeNode root, TreeNode p, TreeNode q) {
+        if (p.val < root.val && q.val < root.val) {
+            return lowestCommonAncestorII(root.left, p, q);
+        }
+        if (p.val > root.val && q.val > root.val) {
+            return lowestCommonAncestorII(root.right, p, q);
+        }
+        return root;
     }
 
     public boolean postOrderLowestCommonAncestor(TreeNode currentNode, TreeNode p, TreeNode q) {
@@ -361,6 +391,22 @@ public class Tree {
         }
     }
 
+    int prev = Integer.MIN_VALUE;
+    public boolean isValidBSTII(TreeNode root) {
+        if (root == null) {
+            return true;
+        } else {
+            if (!isValidBSTII(root.left)) {
+                return false;
+            }
+            if (prev >= root.val) {
+                return false;
+            }
+            prev = root.val;
+            return isValidBSTII(root.right);
+        }
+    }
+
     private boolean dfsValidateBST(TreeNode node, long lower, long ceil) {
         if (node.val <= lower || node.val >= ceil) {
             return false;
@@ -391,6 +437,48 @@ public class Tree {
             invertTree(root.right);
             return root;
         }
+    }
+
+    /**
+     * 100. 相同的树
+     * @param p
+     * @param q
+     * @return
+     */
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        if (p == null || q == null) {
+            return p == q;
+        } else {
+            return p.val == q.val && isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+        }
+    }
+
+    /**
+     * 513. 找树左下角的值
+     * @param root
+     * @return
+     */
+    public int findBottomLeftValue(TreeNode root) {
+        Queue<TreeNode> queue = new LinkedList<>();
+        int result = -1;
+        queue.offer(root);
+        while (true) {
+            result = queue.peek().val;
+            int size = queue.size();
+            for (int i = 0; i < size; ++i) {
+                TreeNode poll = queue.poll();
+                if (poll.left != null) {
+                    queue.offer(poll.left);
+                }
+                if (poll.right != null) {
+                    queue.offer(poll.right);
+                }
+            }
+            if (queue.size() < 1) {
+                break;
+            }
+        }
+        return result;
     }
 
     public static void main(String[] args) {
