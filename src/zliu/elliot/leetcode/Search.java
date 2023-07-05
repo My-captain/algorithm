@@ -1,8 +1,5 @@
 package zliu.elliot.leetcode;
 
-import java.util.Comparator;
-import java.util.TreeSet;
-
 public class Search {
 
     /**
@@ -11,7 +8,7 @@ public class Search {
      * @param target
      * @return
      */
-    public int searchI(int[] nums, int target) {
+    public int search(int[] nums, int target) {
         int l = 0, r = nums.length - 1, mid = 0;
         while (l <= r) {
             mid = (l+r) >> 1;
@@ -43,6 +40,30 @@ public class Search {
                 } else {
                     r = mid - 1;
                 }
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * 704. 二分查找
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int binarySearch(int[] nums, int target) {
+        if (nums.length < 1) {
+            return -1;
+        }
+        int l =0, r = nums.length-1, mid;
+        while (l <= r) {
+            mid = (l+r) >> 1;
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[mid] < target) {
+                l = mid + 1;
+            } else {
+                r = mid - 1;
             }
         }
         return -1;
@@ -211,10 +232,7 @@ public class Search {
 
     public static void main(String[] args) {
         Search search = new Search();
-//        System.out.println(search.search(new int[]{3,5,1}, 3));
-//        System.out.println(search.findPeakElement(new int[]{1,2,1,3,5,6,4}));
-//        System.out.println(search.findPeakElement(new int[]{1,2}));
-        System.out.println(search.search(new int[]{3,1}, 3));
+        System.out.println(search.search(new int[]{3,5,1}, 3));
     }
 
 

@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-public class LinkTable {
+public class DoubleCursor {
 
     /**
      * 16. 最接近的三数之和
@@ -774,6 +774,30 @@ public class LinkTable {
     }
 
     /**
+     * 83. 删除排序链表中的重复元素
+     * @param head
+     * @return
+     */
+    public ListNode deleteDuplicates(ListNode head) {
+        if (head == null) {
+            return head;
+        } else {
+            ListNode fast = head.next, slow = head;
+            while (fast != null) {
+                if (fast.val == slow.val) {
+                    fast = fast.next;
+                } else {
+                    slow.next.val = fast.val;
+                    slow = slow.next;
+                    fast = fast.next;
+                }
+            }
+            slow.next = null;
+        }
+        return head;
+    }
+
+    /**
      * 剑指 Offer 57. 和为s的两个数字
      * @param nums
      * @param target
@@ -945,123 +969,8 @@ public class LinkTable {
         return reverseHead;
     }
 
-    private ListNode reverse(ListNode head) {
-        if (head == null || head.next == null) {
-            return head;
-        }
-        ListNode last = reverse(head.next);
-        head.next.next = head;
-        head.next = null;
-        return last;
-    }
-
-    /**
-     * 92. 反转链表 II
-     * @param head
-     * @param left
-     * @param right
-     * @return
-     */
-    public ListNode reverseBetween(ListNode head, int left, int right) {
-        if (right - left == 0) {
-            return head;
-        }
-        ListNode fakeHead = new ListNode(-1, head);
-        ListNode prev = fakeHead, first, tail = null, temp;
-        for (int i = 0; i < left-1; ++i) {
-            prev = prev.next;
-        }
-        first = prev.next;
-        tail = prev.next.next;
-        temp = prev.next.next;
-        for (int i = left; i < right; ++i) {
-            tail = tail.next;
-            temp.next = prev.next;
-            prev.next = temp;
-            temp = tail;
-        }
-        first.next = tail;
-        return fakeHead.next;
-    }
-
-    /**
-     * 获取单链表的中间node
-     * @param head
-     * @return
-     */
-    public ListNode midNode(ListNode head) {
-        ListNode fast = head;
-        while (fast != null && fast.next != null) {
-            head = head.next;
-            fast = fast.next.next;
-        }
-        return head;
-    }
-
-    public ListNode reverseList1(ListNode head) {
-        ListNode prev = null, cursor = head, next;
-        while (cursor != null) {
-            next = cursor.next;
-            cursor.next = prev;
-            prev = cursor;
-            cursor = next;
-        }
-        return prev;
-    }
-
-    public void reorderList(ListNode head) {
-        ListNode mid = midNode(head);
-        ListNode head2 = reverseList1(mid);
-        while (head2.next != null) {
-            ListNode next = head.next;
-            ListNode next2 = head2.next;
-            head.next = head2;
-            head2.next = next;
-            head = next;
-            head2 = next2;
-        }
-    }
-
-    public void deleteNode(ListNode node) {
-        node.val = node.next.val;
-        node.next = node.next.next;
-    }
-
-    /**
-     * 83. 删除排序链表中的重复元素
-     * @param head
-     * @return
-     */
-    public ListNode deleteDuplicates(ListNode head) {
-        ListNode dummy = new ListNode(-101);
-        dummy.next = head;
-        ListNode prev = dummy, cursor = dummy.next;
-        while (cursor != null && cursor.next != null) {
-            ListNode next = cursor.next;
-            while (next != null && next.val == cursor.val) {
-                cursor = next;
-                next = next.next;
-            }
-            if (prev.next != cursor) {
-                prev.next = next;
-                cursor = next;
-            } else {
-                prev = cursor;
-                cursor = cursor.next;
-            }
-        }
-        return dummy.next;
-    }
-
     public static void main(String[] args) {
-        LinkTable linkTable = new LinkTable();
-//        ListNode node5 = new ListNode(5, null);
-        ListNode node4 = new ListNode(4, null);
-        ListNode node3 = new ListNode(3, node4);
-        ListNode node2 = new ListNode(2, node3);
-        ListNode node1 = new ListNode(1, node2);
-        linkTable.reorderList(node1);
-//        linkTable.reverseBetween(node1, 2, 4);
+        DoubleCursor doubleCursor = new DoubleCursor();
 //        doubleCursor.nextPermutation(new int[]{1,3,2});
 //        doubleCursor.nextPermutation(new int[]{2,3, 1});
 //        doubleCursor.nextPermutation(new int[]{1,2});
@@ -1084,9 +993,9 @@ public class LinkTable {
 //        ListNode[] listNodes = new ListNode[]{a, d, g};
 //        doubleCursor.mergeKLists(listNodes);
 //        doubleCursor.twoSum_II(new int[]{2,3,4}, 6);
-//        doubleCursor.longestPalindrome("cbbd");
+        doubleCursor.longestPalindrome("cbbd");
 
-//        System.out.printf("");
+        System.out.printf("");
     }
 
 }
