@@ -715,8 +715,38 @@ public class Backtrack {
         sb.deleteCharAt(sb.length() - 1);
     }
 
+    /**
+     * 216. 组合总和 III
+     * 找出所有相加之和为 n 的 k 个数的组合，且满足下列条件：
+     * @param k
+     * @param n
+     * @return
+     */
+    public List<List<Integer>> combinationSum3(int k, int n) {
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> path = new ArrayList<>();
+        dfsCombineSum(9, 0, result, n, path, k);
+        return result;
+    }
+
+    public void dfsCombineSum(int i, int currentSum,List<List<Integer>> result, int target, List<Integer> path, int k) {
+        if (currentSum == target && path.size() == k) {
+            result.add(new ArrayList<>(path));
+            return;
+        }
+        int allSelect = i*(1+i)/2;
+        if (i <=0 || allSelect+currentSum < target) {
+            return;
+        }
+        dfsCombineSum(i-1, currentSum, result, target, path, k);
+        path.add(i);
+        dfsCombineSum(i-1, currentSum+i, result, target, path, k);
+        path.remove(path.size()-1);
+    }
+
     public static void main(String[] args) {
         Backtrack backtrack = new Backtrack();
+        backtrack.combinationSum3(3, 9);
 //        backtrack.permute(new int[]{1, 2, 3});
 //        backtrack.solveNQueens(4);
 //        backtrack.totalNQueens(4);
@@ -735,7 +765,7 @@ public class Backtrack {
 //        backtrack.partition("aab");
 //        backtrack.isAdditiveNumber("1023");
 //        backtrack.getMaximumGold(new int[][]{{0,6,0},{5,8,7},{0,9,0}});
-        backtrack.numsSameConsecDiff(2, 1);
+//        backtrack.numsSameConsecDiff(2, 1);
     }
 
 }

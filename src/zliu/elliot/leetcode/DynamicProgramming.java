@@ -35,7 +35,29 @@ public class DynamicProgramming {
     }
 
     /**
+     * 518. 零钱兑换 II
+     * 给你一个整数数组 coins 表示不同面额的硬币，另给一个整数 amount 表示总金额。
+     * 请你计算并返回可以凑成总金额的硬币组合数。如果任何硬币组合都无法凑出总金额，返回 0 。
+     * 假设每一种面额的硬币有无限个。
+     * 题目数据保证结果符合 32 位带符号整数。
+     * @param amount
+     * @param coins
+     * @return
+     */
+    public int change(int amount, int[] coins) {
+        int[] dp = new int[amount + 1];
+        dp[0] = 1;
+        for (int i = 0; i < coins.length; ++i) {
+            for (int j = coins[i]; j <= amount; ++j) {
+                dp[j] += dp[j-coins[i]];
+            }
+        }
+        return dp[amount];
+    }
+
+    /**
      * 509. 斐波那契数
+     *
      * @param n
      * @return
      */
@@ -225,7 +247,7 @@ public class DynamicProgramming {
             for (int j = 1; j * j <= i; j++) {
                 min = Math.min(min, dp[i - j * j]);
             }
-            dp[i] = min+1;
+            dp[i] = min + 1;
         }
         return dp[n];
     }
@@ -234,6 +256,7 @@ public class DynamicProgramming {
      * 70. 爬楼梯
      * 假设你正在爬楼梯。需要 n 阶你才能到达楼顶。
      * 每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
+     *
      * @param n
      * @return
      */
@@ -241,15 +264,15 @@ public class DynamicProgramming {
         if (n == 0) {
             return 0;
         }
-        if (n==1){
+        if (n == 1) {
             return 1;
         }
-        if (n==2){
+        if (n == 2) {
             return 2;
         }
-        int temp1 = 1, temp2=2, temp3=0;
+        int temp1 = 1, temp2 = 2, temp3 = 0;
         for (int i = 2; i < n; ++i) {
-            temp3 = temp2+temp1;
+            temp3 = temp2 + temp1;
             temp1 = temp2;
             temp2 = temp3;
         }
@@ -258,18 +281,19 @@ public class DynamicProgramming {
 
     public int rob(int[] nums) {
         int len = nums.length;
-        int[] f = new int[len+2];
+        int[] f = new int[len + 2];
         f[0] = f[1] = 0;
         f[2] = nums[0];
         for (int i = 1; i < len; ++i) {
-            f[i+2] = Math.max(f[i-1], f[i]) + nums[i];
+            f[i + 2] = Math.max(f[i - 1], f[i]) + nums[i];
         }
-        return Math.max(f[len+1], f[len]);
+        return Math.max(f[len + 1], f[len]);
     }
 
     /**
      * 118. 杨辉三角
      * 给定一个非负整数 numRows，生成「杨辉三角」的前 numRows 行。
+     *
      * @param numRows
      * @return
      */
@@ -289,6 +313,7 @@ public class DynamicProgramming {
 
     /**
      * 53. 最大子数组和
+     *
      * @param nums
      * @return
      */
@@ -299,7 +324,7 @@ public class DynamicProgramming {
             if (i == 0) {
                 dp[i] = nums[i];
             } else {
-                dp[i] = Math.max(dp[i-1]+nums[i], nums[i]);
+                dp[i] = Math.max(dp[i - 1] + nums[i], nums[i]);
             }
             max = Math.max(dp[i], max);
         }
@@ -308,6 +333,7 @@ public class DynamicProgramming {
 
     /**
      * 300. 最长递增子序列
+     *
      * @param nums
      * @return
      */
@@ -333,6 +359,7 @@ public class DynamicProgramming {
 
     /**
      * 121. 买卖股票的最佳时机
+     *
      * @param prices
      * @return
      */
@@ -345,8 +372,8 @@ public class DynamicProgramming {
         int[] dp = new int[prices.length];
         dp[0] = prices[0];
         for (int i = 1; i < prices.length; ++i) {
-            dp[i] = Math.min(dp[i-1], prices[i]);
-            profit = Math.max(prices[i] - dp[i-1], profit);
+            dp[i] = Math.min(dp[i - 1], prices[i]);
+            profit = Math.max(prices[i] - dp[i - 1], profit);
         }
         return profit;
     }
@@ -435,9 +462,155 @@ public class DynamicProgramming {
         return ans;
     }
 
+    /**
+     * 416. 分割等和子集
+     * 给你一个 只包含正整数 的 非空 数组 nums 。请你判断是否可以将这个数组分割成两个子集，使得两个子集的元素和相等。
+     * @param nums
+     * @return
+     */
+    public boolean canPartition(int[] nums) {
+        int sum = Arrays.stream(nums).sum();
+        if (sum % 2 != 0) {
+            return false;
+        }
+        sum /= 2;
+        // 构成i之和的方案数量
+        boolean[] dp = new boolean[sum + 1];
+        dp[0] = true;
+        for (int num : nums) {
+            for (int i = sum; i >= num; --i) {
+                dp[i] |= dp[i-num];
+            }
+        }
+        return dp[sum];
+    }
+
+    /**
+     * 542. 01 矩阵
+     * 给定一个由 0 和 1 组成的矩阵 mat ，请输出一个大小相同的矩阵，其中每一个格子是 mat 中对应位置元素到最近的 0 的距离。
+     * 两个相邻元素间的距离为 1 。
+     * @param mat
+     * @return
+     */
+    public int[][] updateMatrix(int[][] mat) {
+        int[][] dir = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        int m = mat.length, n = mat[0].length;
+        int[][] dp = new int[m][n];
+        for (int i = 0; i < m; ++i) {
+            Arrays.fill(dp[i], Integer.MAX_VALUE/2);
+        }
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                dp[i][j] = mat[i][j] == 0 ? 0 : dp[i][j];
+            }
+        }
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                int min = dp[i][j];
+                if (min == 0) continue;
+                for (int k = 0; k < 4; ++k) {
+                    int x = i + dir[k][0];
+                    int y = j + dir[k][1];
+                    if (x >=0 && x<m && y >=0 && y< n) {
+                        min = Math.min(min, dp[x][y]+1);
+                    }
+                    dp[i][j] = min;
+                }
+            }
+        }
+        for (int i = m-1; i >= 0; --i) {
+            for (int j = n-1; j >= 0; --j) {
+                int min = dp[i][j];
+                if (min == 0) continue;
+                for (int k = 0; k < 4; ++k) {
+                    int x = i + dir[k][0];
+                    int y = j + dir[k][1];
+                    if (x >=0 && x<m && y >=0 && y< n) {
+                        min = Math.min(min, dp[x][y]+1);
+                    }
+                    dp[i][j] = min;
+                }
+            }
+        }
+        return dp;
+    }
+
+    /**
+     * 63. 不同路径 II
+     * 一个机器人位于一个 m x n 网格的左上角 （起始点在下图中标记为 “Start” ）。
+     * 机器人每次只能向下或者向右移动一步。机器人试图达到网格的右下角（在下图中标记为 “Finish”）。
+     * 现在考虑网格中有障碍物。那么从左上角到右下角将会有多少条不同的路径？
+     * 网格中的障碍物和空位置分别用 1 和 0 来表示。
+     * @param obstacleGrid
+     * @return
+     */
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        int m = obstacleGrid.length, n = obstacleGrid[0].length;
+        int[] dp = new int[n];
+        dp[0] = obstacleGrid[0][0] == 0 ? 1:0;
+
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                if (obstacleGrid[i][j] == 1) {
+                    dp[j] = 0;
+                    continue;
+                }
+                if (j-1>=0){
+                    dp[j] += dp[j-1];
+                }
+            }
+        }
+        return dp[n-1];
+    }
+
+    public int findMaxForm(String[] strs, int m, int n) {
+        int cnt = strs.length;
+        int[] con0 = new int[cnt];
+        int[] con1 = new int[cnt];
+        for (int i = 0; i < cnt; ++i) {
+            String str = strs[i];
+            for (int j = 0; j < str.length(); ++j) {
+                switch (str.charAt(j)) {
+                    case '0':
+                        con0[i]+=1;
+                        break;
+                    case '1':
+                        con1[i]+=1;
+                        break;
+                }
+            }
+        }
+        int[][] dp = new int[m + 1][n + 1];
+        for (int k = 0; k < strs.length; ++k) {
+            String str = strs[k];
+            for (int i = m; i >= con0[k]; --i) {
+                for (int j = n; j >= con1[k]; --j) {
+                    dp[i][j] = Math.max(dp[i][j], dp[i-con0[k]][j-con1[k]]+1);
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+    /**
+     * 01背包求排列数
+     * 377. 组合总和 Ⅳ
+     * 给你一个由 不同 整数组成的数组 nums ，和一个目标整数 target 。请你从 nums 中找出并返回总和为 target 的元素组合的个数。
+     * 题目数据保证答案符合 32 位整数范围。顺序不同的序列被视作不同的组合。
+     * @param nums
+     * @param target
+     * @return
+     */
+    public int combinationSum4(int[] nums, int target) {
+
+    }
+
     public static void main(String[] args) {
         DynamicProgramming dp = new DynamicProgramming();
-        dp.lengthOfLIS(new int[]{10,9,2,5,3,7,101,18});
+        dp.canPartition(new int[]{100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100});
+//        dp.lengthOfLIS(new int[]{10, 9, 2, 5, 3, 7, 101, 18});
+//        dp.maxProfitIII(new int[]{1,2,4,2,5,7,2,4,9,0});
+//        dp.trap(new int[]{4, 2, 0, 3, 2, 5});
     }
 
 }
